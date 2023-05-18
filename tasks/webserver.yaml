@@ -1,0 +1,17 @@
+---
+
+#Webserver installation for Ubuntu & Centos
+
+- name: Install apache2 for Ubuntu
+  apt:
+      name: apache2
+      state: present
+      update_cache: yes
+  when: ansible_distribution == "Ubuntu"
+
+- name: Install httpd for CentOS
+  yum:
+      name: httpd
+      state: present
+      update_cache: yes
+  when: ansible_distribution == "CentOS"

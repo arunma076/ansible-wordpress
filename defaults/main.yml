@@ -1,0 +1,23 @@
+---
+# defaults file for wp_con      
+
+#Php modules
+php_modules: ['python3-pymysql','ghostscript' , 'libapache2-mod-php' , 'mysql-server' , 'php','php-bcmath' , 'php-curl' , 'php-imagick' , 'php-intl' , 'php-json' , 'php-mbstring' , 'php-mysql' , 'php-xml' , 'php-zip']
+
+
+
+#MYSQL package
+mysql_deb: ['mysql-server', 'mysql-client', 'python-mysqldb']
+mysql_redhat: ['mariadb-server']
+
+#MySQL Settings
+mysql_db: "wordpress"
+mysql_user: "wp"
+mysql_password: "wp"
+
+#Template values
+http_port: 80
+doc_root: /var/www/wordpress
+
+
+

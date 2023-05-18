@@ -1,0 +1,18 @@
+---
+# handlers file for wp_con
+
+- name: Restart apache
+  service:
+      name: apache2
+      state: restarted
+
+- name: Restart httpd
+  service:
+      name: httpd
+      state: restarted
+
+- name: Start mariadb
+  service: 
+     name: mariadb
+     state: started
+

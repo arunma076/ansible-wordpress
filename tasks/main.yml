@@ -1,0 +1,110 @@
+---
+# tasks file for wp_con
+
+#Php modules & Apache installation
+
+#- name: Install PHP Extensions
+# apt:
+#    name: "{{ item }}"
+#    update_cache: yes
+#    state: latest
+#  loop: "{{ php_modules }}"
+#  when: ansible_distribution == "Ubuntu"
+
+
+#Webserver installation
+
+- name: Webserver installation
+  include_tasks:
+          file: webserver.yaml
+
+
+#MYSQL installation
+
+- name: Webserver installation
+  include_tasks:
+          file: mysql.yaml
+
+#Database and user creation
+
+- name: Creates database for WordPress
+  mysql_db:
+    name: "{{ mysql_db }}"
+    state: present
+    login_user: root
+  
+
+- name: Create MySQL user for WordPress
+  mysql_user:
+    name: "{{ mysql_user }}"
+    password: "{{ mysql_password }}"
+    priv: "{{ mysql_db }}.*:ALL"
+    state: present
+    login_user: root
+
+#Wordpress installation
+
+- name: Copy WorPress Zip file
+  copy:
+      src: latest.tar.gz
+      dest: /tmp
+
+- name: Download Extract WorPress
+  unarchive:
+      src: latest.tar.gz
+      dest: /var/www/
+      
+
+- name: Update default Apache site for Ubuntu
+  template:
+      src: apache.conf.j2
+      dest: /etc/apache2/sites-enabled/apache.conf
+  when: ansible_distribution == "Ubuntu"
+  notify: Restart apache
+
+- name: Update default Apache site for CentOS
+  template:
+      src: httpd.conf.j2
+      dest: /etc/httpd/conf/httpd.conf
+  when: ansible_distribution == "CentOS"
+  notify: Restart httpd
+
+
+- name: Copy sample config file
+  command: mv /var/www/wordpress/wp-config-sample.php /var/www/wordpress/wp-config.php
+
+- name: Update Wordpress config file
+  lineinfile:
+      path: /var/www/wordpress/wp-config.php
+      regexp: "{{item.regexp}}"
+      line: "{{item.line}}"
+  with_items:
+        - {'regexp': "define\\( 'DB_NAME', '(.)+' \\);", 'line': "define( 'DB_NAME', '{{mysql_db}}' );"}
+        - {'regexp': "define\\( 'DB_USER', '(.)+' \\);", 'line': "define( 'DB_USER', '{{mysql_user}}' );"}
+        - {'regexp': "define\\( 'DB_PASSWORD', '(.)+' \\);", 'line': "define( 'DB_PASSWORD', '{{mysql_password}}' );"}
+
+- name: Update ownership to Apache user
+  file:
+     path: "{{doc_root}}"
+     state: directory
+     recurse: yes
+     owner: www-data
+  when: ansible_distribution == "Ubuntu"
+
+
+- name: Update ownership to HTTPD user
+  file:
+     path: "{{doc_root}}"
+     state: directory
+     recurse: yes
+     owner: apache
+  when: ansible_distribution == "CentOS"
+
+
+- name: Set the correct permissions on Wordpress directories
+  command: find "{{doc_root}}" -type d -exec chmod 750 {} \;
+
+- name: Set the correct permissions for Wordpress files
+  command: find "{{doc_root}}" -type f -exec chmod 640 {} \;
+
+

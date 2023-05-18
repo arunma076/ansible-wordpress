@@ -1,0 +1,20 @@
+---
+
+#MySQL installation for Ubuntu & Centos
+
+- name: mysql install
+  apt:
+    name: "{{mysql_deb}}"
+    state: present
+    force: yes
+    update_cache: yes
+  when: ansible_distribution == "Ubuntu"
+  
+
+- name: mysql install
+  yum:
+    name: "{{mysql_redhat}}"
+    state: present
+    update_cache: yes
+  when: ansible_distribution == "CentOS"
+  notify: Start mariadb
