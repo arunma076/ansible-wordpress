@@ -1,10 +1,8 @@
 ---
-# defaults file for wp_con      
+#defaults file for wp_con      
 
 #Php modules
 php_modules: ['python3-pymysql','ghostscript' , 'libapache2-mod-php' , 'mysql-server' , 'php','php-bcmath' , 'php-curl' , 'php-imagick' , 'php-intl' , 'php-json' , 'php-mbstring' , 'php-mysql' , 'php-xml' , 'php-zip']
-
-
 
 #MYSQL package
 mysql_deb: ['mysql-server', 'mysql-client', 'python-mysqldb']
