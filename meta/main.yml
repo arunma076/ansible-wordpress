@@ -15,6 +15,6 @@ platforms:
        - all
      
     
-galaxy_tags: [ http,apache, mysql,wordpress,php ]
+galaxy_tags: [ http,apache, mysql,wordpress,php,ubuntu,centos ]
     
   
